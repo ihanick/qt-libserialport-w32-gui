@@ -54,5 +54,17 @@ void MainWindow::write_done() {
 
 void MainWindow::on_openBtn_clicked()
 {
-    emit SerialOpen(ui->portSelector->currentData().toString());
+    int idx = ui->portSelector->currentIndex();
+    if (idx < 0) {
+        ports.clear();
+        ports = serial.enum_all_ports();
+        foreach (QString val, ports.keys()) {
+            ui->portSelector->addItem(ports[val], val);
+        }
+        return;
+    }
+
+    QString portname = ui->portSelector->itemData(idx).toString();
+
+    emit SerialOpen(portname);
 }
